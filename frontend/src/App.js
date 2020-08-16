@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import GoogleMapReact from 'google-map-react';
-import heatData from './data/testData';
+import Title from './res/crimepredicttitle.png';
 import redDot from './res/red-dot.png';
 import greenDot from './res/green-dot.png';
 import yellowDot from './res/yellow-dot.png';
@@ -26,12 +26,24 @@ export default class App extends Component {
       lat: 47.5,
       lng: -122.3097
     },
-    zoom: 11
+    zoom: 11,
   };
 
-  // constructor() {
-  //   super();
-  // }
+  constructor() {
+    super();
+    this.state = {
+      crimes: {}
+    }
+  }
+
+  componentDidMount() {
+    console.log('token = ', window.token);
+    fetch("/crime").then(response =>
+      response.json().then(data => {
+        this.setState({ crimes: data });
+      })
+    );
+  }
 
   renderMap() {
     return (
@@ -44,15 +56,16 @@ export default class App extends Component {
           options={getMapOptions}
         >
           {
-            heatData.map(({ lat, long }) => (
+            console.log('this.state.crime', this.state.crimes.list),
+            this.state.crimes.list && this.state.crimes.list.map(({ lat, long }) => (
               // <img
               //   src={redDot}
               //   lat={lat * 10 + 0.0005}
               //   lng={long * 100 + 0.025}
               // />
               <Marker
-                lat={lat * 10 + 0.0005}
-                lng={long * 100 + 0.025}
+                lat={lat}
+                lng={long}
                 name="My Marker"
                 color="red"
               />
@@ -67,8 +80,9 @@ export default class App extends Component {
     return (
       <div className="container">
         <div className='header'>
-          <p style={styles.p1}>Welcome to Our Crime Prediction Site! </p>
-          <p style={{ fontSize: 30, color: 'white' }}>Your Safety is Our Greatest Concern</p>
+          {/* <p style={styles.p1}>Welcome to Our Crime Prediction Site! </p>
+          <p style={{ fontSize: 30, color: 'white' }}>Your Safety is Our Greatest Concern</p> */}
+          <img src={Title} style={{ marginLeft: 35 }} />
         </div>
         <div className="body" style={styles.body}>
           <div className="map" style={styles.map}>

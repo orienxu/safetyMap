@@ -1,18 +1,9 @@
-import flask
-from flask import jsonify
 import torch
 import pandas as pd
 import numpy as np
 from model import Net
 
 MODEL_PATH = './trained_model.pth'
-
-app = flask.Flask("__main__")
-
-@app.route('/')
-def my_index() :
-    return flask.render_template('index.html', token='Hello Flask+React')
-
 
 def full_history():
     data = pd.read_csv('crime_data.csv')
@@ -45,10 +36,9 @@ def predict(month, day, hour):
     np.savetxt('minute.txt', minute_log)
     return minute_log
 
-@app.route('/crime')
-def crimeMinute():
+def main():
     # input = [month, day, hour, minute]
-    input = np.array([12, 10, 1, 0])
+    input = np.array([1, 10, 1, 0])
 
     device = torch.device("cpu")
 
@@ -59,7 +49,6 @@ def crimeMinute():
     model.eval()
 
     minute_log = np.ndarray((60,2))
-    minute_list = []
     with torch.no_grad():
         for i in range(0, 60):
             input[-1] = i
@@ -69,14 +58,9 @@ def crimeMinute():
             minute_log[i] = prediction.cpu().numpy()
     minute_log[:, 0] += 47.6
     minute_log[:, 1] -= 122.3
-
-    for i in range(0, 60):
-        minute_list.append({'lat' : minute_log[i, 0], 'long' : minute_log[i,1]})
     # np.save('minute.npy', minute_log)
-    # np.savetxt('minute.txt', minute_log)
-    return jsonify({'list':minute_list})
-
-    # return jsonify({'crimes': minute_log})
+    np.savetxt('minute.txt', minute_log)
     # output should be similar to: 47.6, -122.3
 
-app.run(debug=True)
+if __name__ == '__main__':
+    main()

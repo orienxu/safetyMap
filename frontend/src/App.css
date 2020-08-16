@@ -1,5 +1,4 @@
 .container {
-  /* background-color: #5127AA; */
   display: flex;
   flex-direction: column;
   height: 100vmin;
@@ -8,11 +7,10 @@
 
 .header {
 justify-content: center;
-align-items: center;
-background-color: #5127AA;
+align-items: flex-start;
+background-color: white;
 width: 100%;
-text-align: center;
-
+/* text-align: center; */
 }
 
 .body {
@@ -20,7 +18,7 @@ text-align: center;
   text-align: center;
   display: flex;
   flex-direction: row;
-  margin-top: 6vmin;
+  /* margin-top: 4vmin; */
   justify-content: space-around;
 }
 

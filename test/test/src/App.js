@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import './App.css';
 import GoogleMapReact from 'google-map-react';
 import heatData from './data/testData';
@@ -10,6 +10,7 @@ import SliderHour from './sliderHour';
 import Marker from './marker/marker';
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
+
 
 const getMapOptions = (maps) => {
   return {
@@ -29,9 +30,23 @@ export default class App extends Component {
     zoom: 11
   };
 
-  // constructor() {
-  //   super();
-  // }
+  constructor() {
+    super();
+    this.state = {
+      crimes: []
+    }
+  }
+
+  componentDidMount() {
+    console.log('fetching ...');
+
+    fetch("/crime").then(response =>
+      response.json().then(data => {
+        console.log('data', data)
+        // setMovies(data.movies);
+      })
+    );
+  }
 
   renderMap() {
     return (
