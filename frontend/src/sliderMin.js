@@ -50,8 +50,8 @@ export default class Slider extends React.Component {
 
   render() {
     return (
-      <Styles opacity={this.state.value > 10 ? (this.state.value / 60) : .1} color={this.props.color}>
-        <input type="range" min={0} max={60} value={this.state.value} className="slider" onChange={this.handleOnChange} />
+      <Styles opacity={this.state.value > 10 ? (this.state.value / 24) : .1} color={this.props.color}>
+        <input type="range" min={0} max={24} value={this.state.value} className="slider" onChange={this.handleOnChange} />
         <div className="value">{this.state.value}</div>
       </Styles>
     )

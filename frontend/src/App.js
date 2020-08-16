@@ -7,6 +7,7 @@ import greenDot from './res/green-dot.png';
 import yellowDot from './res/yellow-dot.png';
 import SliderMin from './sliderMin';
 import SliderHour from './sliderHour';
+import SliderSec from './sliderSec';
 import Marker from './marker/marker';
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
@@ -23,26 +24,40 @@ const getMapOptions = (maps) => {
 export default class App extends Component {
   static defaultProps = {
     center: {
-      lat: 47.5,
+      lat: 47.58,
       lng: -122.3097
     },
-    zoom: 11,
+    zoom: 12
   };
 
   constructor() {
     super();
     this.state = {
-      crimes: {}
+      crimes: {},
+      mountTime: (new Date).getTime(),
     }
   }
 
   componentDidMount() {
-    console.log('token = ', window.token);
     fetch("/crime").then(response =>
       response.json().then(data => {
         this.setState({ crimes: data });
       })
     );
+  }
+
+  handleClick() {
+    const currentTime = (new Date).getTime();
+
+    if (currentTime >= (this.state.mountTime + 4000)) {
+      this.setState({ mountTime: currentTime })
+      fetch("/crime").then(response =>
+        response.json().then(data => {
+          this.setState({ crimes: data });
+        })
+      );
+    } else {
+    }
   }
 
   renderMap() {
@@ -76,6 +91,28 @@ export default class App extends Component {
     );
   }
 
+  renderInfo() {
+    return (
+      <div className="info" style={styles.info}>
+        <div>
+          <p>Select Day</p>
+          <SliderHour color="#FF4136" />
+        </div>
+        <div>
+          <p>Select Hour</p>
+          <SliderMin color="#FF4136" />
+        </div>
+        <div>
+          <p>Select Minute</p>
+          <SliderSec color="#FF4136" />
+        </div>
+        <button onClick={() => this.handleClick()}>
+          Search For Danger
+        </button>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="container">
@@ -88,17 +125,7 @@ export default class App extends Component {
           <div className="map" style={styles.map}>
             {this.renderMap()}
           </div>
-          <div className="info" style={styles.info}>
-            <div>
-              <p>Select Hour</p>
-              <SliderHour color="#FF4136" />
-
-            </div>
-            <div>
-              <p>Select Minute</p>
-              <SliderMin color="#FF4136" />
-            </div>
-          </div>
+          {this.renderInfo()}
         </div>
       </div>
     );
